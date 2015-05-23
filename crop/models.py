@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
-#from django_localflavor_us.models import PhoneNumberField
 
 class AmendmentType(models.Model):
 
@@ -60,13 +59,12 @@ class Alfalfa(CropBase):
     weed_spray = models.DateField(null=True, blank=True)
     first_water = models.DateField(null=True, blank=True)
     second_water = models.DateField(null=True, blank=True)
-    total_tons = models.FloatField(null=True, blank=True)
     
 class CornMilo(CropBase):
 
     seeds = models.FloatField(help_text="lbs. per acre")
     kernels = models.FloatField(help_text="lbs. per acre")
-    
+
     @property
     def crop_yield_70(self):
         return (100.0 - self.moisture) * self.crop_yield / 30.0
@@ -76,11 +74,11 @@ class CornMilo(CropBase):
         return self.crop_yield / self.field.acres
 
     @property
-    def tons_per_acre_70(self):
-        return self.yield_70 / self.field.acres
+    def yield_per_acre_70(self):
+        return self.crop_yield_70 / self.field.acres
 
     class Meta:
-        verbose_name_plural = "Corn Milo"
+        verbose_name_plural = "Corn & Milo"
 
 class Amendment(models.Model):
 
