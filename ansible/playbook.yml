@@ -129,6 +129,8 @@
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
       settings={{ django_settings_module }}
+    notify:
+    - restart apache2
 
   handlers:
     - name: restart apache2

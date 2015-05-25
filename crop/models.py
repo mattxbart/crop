@@ -86,7 +86,10 @@ class CornMilo(CropBase):
 class Amendment(models.Model):
 
     amendment_type = models.ForeignKey('crop.AmendmentType')
-    crop_type = models.ForeignKey(ContentType)
+
+    limit = models.Q(app_label = 'crop', model = 'cornmilo') | models.Q(app_label = 'crop', model = 'alfalfa')
+
+    crop_type = models.ForeignKey(ContentType, limit_choices_to=limit)
     crop_id = models.PositiveIntegerField()
     crop = generic.GenericForeignKey("crop_type", "crop_id")
     customer = models.PositiveIntegerField()
