@@ -34,9 +34,9 @@ def download_corn_milo(request):
                          obj.moisture,
                          obj.seeds,
                          obj.kernels,
-                         obj.crop_yield_70,
-                         obj.yield_per_acre,
-                         obj.yield_per_acre_70,
+                         obj.crop_yield_70(),
+                         obj.yield_per_acre(),
+                         obj.yield_per_acre_70(),
                          ])
 
     return response

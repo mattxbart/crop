@@ -19,7 +19,7 @@ class HarvestMethodAdmin(admin.ModelAdmin):
 class CornMiloAdmin(admin.ModelAdmin):
     list_display = ['type', 'field', 'plant_date', 
                     'harvest_date', 'crop_yield',
-                    'crop_yield_70', 'yield_per_acre',
+                    'yield_per_acre', 'crop_yield_70',
                     'yield_per_acre_70',]
 
 admin.site.register(Amendment, AmendmentAdmin)

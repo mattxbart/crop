@@ -44,8 +44,8 @@ class CropBase(models.Model):
     field = models.ForeignKey('crop.Field')
     plant_date = models.DateField()
     harvest_date = models.DateField(null=True, blank=True)
-    crop_yield = models.FloatField(help_text="tons")
-    moisture = models.FloatField(help_text="pct.")
+    crop_yield = models.FloatField(verbose_name="Total Yield - tons")
+    moisture = models.FloatField(help_text="Moisture - pct.")
 
     class Meta:
         abstract = True
@@ -65,17 +65,17 @@ class CornMilo(CropBase):
     seeds = models.FloatField(help_text="lbs. per acre")
     kernels = models.FloatField(help_text="lbs. per acre")
 
-    @property
     def crop_yield_70(self):
         return (100.0 - self.moisture) * self.crop_yield / 30.0
+    crop_yield_70.short_description = 'Total Yield at 70%'
 
-    @property
     def yield_per_acre(self):
         return self.crop_yield / self.field.acres
+    yield_per_acre.short_description = 'Yield - tons per acre'
 
-    @property
     def yield_per_acre_70(self):
-        return self.crop_yield_70 / self.field.acres
+        return self.crop_yield_70() / self.field.acres
+    yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
 
     class Meta:
         verbose_name_plural = "Corn & Milo"
