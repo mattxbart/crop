@@ -2,7 +2,10 @@ from django.contrib import admin
 from crop.models import *
 
 class AmendmentAdmin(admin.ModelAdmin):
-    pass
+    related_lookup_fields = {
+        'generic': [['crop_type', 'crop_id']]
+    }
+
 
 class AmendmentTypeAdmin(admin.ModelAdmin):
     pass
