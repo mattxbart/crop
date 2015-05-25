@@ -5,7 +5,10 @@
     apache_http_port: 81
     nginx_http_port: 80
     max_clients: 200
-    virtualenv_dir: /srv/django/{{ domain }}
+    virtualenv_dir: "/srv/django/{{ domain }}"
+    application_dir: "{{ virtualenv_dir }}/crop"
+    django_project_name: prj
+    django_project_home: "{{ virtualenv_dir }}/{{ django_project_name }}"
 
   remote_user: ubuntu
   sudo: yes
@@ -17,32 +20,21 @@
   - name: install libapache2-mod-wsgi
     apt: pkg=libapache2-mod-wsgi state=latest
   - name: ensure python-dev is latest version
-    apt: name=python3-dev update_cache=yes state=latest
+    apt: name=python-dev update_cache=yes state=latest
   - name: ensure git is latest version
     apt: name=git update_cache=yes state=latest
-
+  - name: ensure postgres is latest version
+    apt: name=postgresql update_cache=yes state=latest
+    apt: name=postgresql-server-dev-9.3 update_cache=yes state=latest
   - name: create user deploy
     user: name=deploy group=www-data shell=/bin/bash 
 
-  - name: create project directory
-    file: path={{ virtualenv_dir }} owner=deploy group=www-data state=directory
-
-  - name: create virtualenv
-    shell: virtualenv {{ virtualenv_dir }}
-    sudo_user: deploy
-
-  - name: git checkout
-    git: repo=https://github.com/mattxbart/crop.git
-         dest={{ virtualenv_dir }}/crop
-
-  - name: install web application dependencies
-    pip: requirements={{ virtualenv_dir }}/crop/requirements.txt
-         virtualenv={{virtualenv_dir}}
-
   - name: apache2 listen on port 81
-    lineinfile: dest=/etc/apache2/ports.conf regexp="^Listen 80" line="Listen {{ apache_http_port }}" state=present
+    template: src=roles/webtier/templates/apache_port.j2 dest=/etc/apache2/ports.conf
+
   - name: write the apache config file
     template: src=roles/webtier/templates/apache.j2 dest=/etc/apache2/sites-enabled/{{ domain }}.conf
+
   - name: write the apache servername
     template: src=roles/webtier/templates/apache_servername.j2 dest=/etc/apache2/conf-enabled/servername.conf
     notify:
@@ -50,16 +42,65 @@
 
   - name: ensure nginx is at the latest version
     apt: pkg=nginx state=latest
+
   - name: remove default nginx conf
     file: path=/etc/nginx/sites-enabled/default state=absent 
+
   - name: write nginx config file
     template: src=roles/webtier/templates/nginx.j2 dest=/etc/nginx/sites-enabled/{{ domain }}.conf
     notify:
     - restart nginx
+
   - name: ensure nginx is running (and enable it at boot)
     service: name=nginx state=started enabled=yes
 
-  
+  - name: create virtualenv directory
+    file: path={{ virtualenv_dir }} owner=deploy group=www-data state=directory
+
+  - name: create django project directory
+    file: path={{ django_project_home }} owner=deploy group=www-data state=directory
+
+  - name: create virtualenv
+    shell: virtualenv {{ virtualenv_dir }}
+    sudo_user: deploy
+
+  - name: git checkout
+    git: repo=https://github.com/mattxbart/crop.git
+         dest={{ application_dir }}
+    sudo_user: deploy
+
+  - name: install web application dependencies
+    pip: requirements={{ application_dir }}/requirements.txt
+         virtualenv={{virtualenv_dir}}
+    sudo_user: deploy
+
+  - name: check if django project already exists
+    stat: path={{ django_project_home }}
+    register: django_project_dir
+
+  - name: setup django project
+    shell: "{{ virtualenv_dir }}/bin/django-admin startproject {{ django_project_name }} {{ django_project_home }}"
+    sudo_user: deploy
+    when: django_project_dir.stat.isdir is not defined
+
+  - name: setup django settings
+    template: src=roles/webtier/templates/local_settings.j2 dest="{{ django_project_home }}/prj/local_settings.py"
+    sudo_user: deploy
+
+  - name: update django to use local settings
+    lineinfile:
+      dest="{{ django_project_home }}/prj/settings.py"
+      line="from .local_settings import *"
+      state=present
+      insertafter=EOF
+      create=True
+    notify:
+    - restart apache2
+
+  - name: Django collectstatic
+    django_manage: command=collectstatic 
+      virtualenv={{ virtualenv_dir }}
+      app_path={{ django_project_home }}
 
   handlers:
     - name: restart apache2
