@@ -12,5 +12,14 @@ INSTALLED_APPS = (
     'crop',
 )
 
+DATABASES = {
+    'default':{
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': '{{ postgres_db }}',
+        'USER': '{{ postgres_user }}',
+        'PASSWORD': '{{ postgres_password }}',
+    }
+}
+
 ROOT_URLCONF = 'crop.urls'
 GRAPPELLI_ADMIN_TITLE = 'Wegis and Young'

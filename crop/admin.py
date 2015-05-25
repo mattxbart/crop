@@ -17,7 +17,7 @@ class HarvestMethodAdmin(admin.ModelAdmin):
     pass
 
 class CornMiloAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['type', 'field', 'plant_date', 'harvest_date', 'crop_yield']
 
 admin.site.register(Amendment, AmendmentAdmin)
 admin.site.register(AmendmentType, AmendmentTypeAdmin)

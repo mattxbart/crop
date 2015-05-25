@@ -9,6 +9,9 @@
     application_dir: "{{ virtualenv_dir }}/crop"
     django_project_name: prj
     django_project_home: "{{ virtualenv_dir }}/{{ django_project_name }}"
+    postgres_db: "wegisyoung"
+    postgres_user: "django"
+    postgres_password: "ceec4eif7ya"
 
   remote_user: ubuntu
   sudo: yes
@@ -23,9 +26,10 @@
     apt: name=python-dev update_cache=yes state=latest
   - name: ensure git is latest version
     apt: name=git update_cache=yes state=latest
-  - name: ensure postgres is latest version
+  - name: ensure postgres any psycopg2 is latest version
     apt: name=postgresql update_cache=yes state=latest
     apt: name=postgresql-server-dev-9.3 update_cache=yes state=latest
+    apt: name=python-psycopg2 update_cache=yes state=latest
   - name: create user deploy
     user: name=deploy group=www-data shell=/bin/bash 
 
@@ -99,6 +103,22 @@
 
   - name: Django collectstatic
     django_manage: command=collectstatic 
+      virtualenv={{ virtualenv_dir }}
+      app_path={{ django_project_home }}
+
+
+  - name: create postgres db
+    postgresql_db: name={{ postgres_db }}
+                   encoding='UTF-8'
+                   template='template0'
+    sudo_user: postgres
+
+  - name: create postgres user
+    postgresql_user: db=wegisyoung name={{ postgres_user }} password={{ postgres_password }} priv=ALL
+    sudo_user: postgres
+
+  - name: Django syncdb
+    django_manage: command=syncdb
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
 
