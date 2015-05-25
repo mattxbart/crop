@@ -1,0 +1,20 @@
+WSGIDaemonProcess crop python-path=/srv/django/cropenv/prj:/srv/django/cropenv/lib/python3.4/site-packages
+
+<VirtualHost *:81>
+
+    ServerName {{ domain }}
+
+    <Location "/media">
+      SetHandler None
+    </Location>
+
+    WSGIPassAuthorization On
+    WSGIScriptAlias / /srv/django/cropenv/prj/prj/wsgi.py process-group=crop
+
+    <Location />
+      Order allow,deny
+      Allow from all
+    </Location>
+
+</VirtualHost>
+
