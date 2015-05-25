@@ -77,6 +77,9 @@ class CornMilo(CropBase):
         return self.crop_yield_70() / self.field.acres
     yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
 
+    def __str__(self):
+        return "{0} {1}".format(self.type, self.field)
+
     class Meta:
         verbose_name_plural = "Corn & Milo"
 
@@ -91,5 +94,5 @@ class Amendment(models.Model):
     tons = models.FloatField()
 
     def __str__(self):
-        return "{0} {1}".format(self.amendment_type.name, self.crop.name)
+        return "{0} - {1}".format(self.amendment_type.name, self.crop)
     
