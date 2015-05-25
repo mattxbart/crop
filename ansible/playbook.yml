@@ -9,6 +9,7 @@
     application_dir: "{{ virtualenv_dir }}/crop"
     django_project_name: prj
     django_project_home: "{{ virtualenv_dir }}/{{ django_project_name }}"
+    django_settings_module: "{{ django_project_home }}/{{django_project_name }}/settings.py"
     postgres_db: "wegisyoung"
     postgres_user: "django"
     postgres_password: "ceec4eif7ya"
@@ -106,7 +107,6 @@
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
 
-
   - name: create postgres db
     postgresql_db: name={{ postgres_db }}
                    encoding='UTF-8'
@@ -121,6 +121,7 @@
     django_manage: command=syncdb
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
+      settings={{ django_settings_module }}
 
   handlers:
     - name: restart apache2
