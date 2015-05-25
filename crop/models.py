@@ -1,13 +1,7 @@
 from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
-
-class AmendmentType(models.Model):
-
-    name = models.CharField(max_length=255, unique=True)
-
-    def __str__(self):
-        return self.name
+from django.core.validators import ValidationError
 
 class Customer(models.Model):
 
@@ -91,9 +85,35 @@ class CornMilo(CropBase):
     class Meta:
         verbose_name_plural = "Corn & Milo"
 
+class AmendmentRatio(models.Model):
+
+    gypsum = models.FloatField()
+    manure = models.FloatField()
+    sulfur = models.FloatField()
+
+    def clean(self, *args, **kwargs):
+
+        qs = self.__class__._default_manager.filter(
+            gypsum=self.gypsum,
+            manure=self.manure,
+            sulfur=self.sulfur,
+        )
+
+        if qs.exists():
+            raise ValidationError(['This amendment ratio already exists',])
+
+        super(AmendmentRatio, self).validate_unique(*args, **kwargs)
+
+    @property
+    def display_ratio(self):
+        return "G {0} - M {1} - S {2}".format(self.gypsum, self.manure, self.sulfur)
+
+    def __str__(self):
+        return self.display_ratio
+
 class Amendment(models.Model):
 
-    amendment_type = models.ForeignKey('crop.AmendmentType')
+    amendment_ratio = models.ForeignKey('crop.AmendmentRatio')
 
     limit = models.Q(app_label = 'crop', model = 'cornmilo') | models.Q(app_label = 'crop', model = 'alfalfa')
 
@@ -104,5 +124,5 @@ class Amendment(models.Model):
     tons = models.FloatField()
 
     def __str__(self):
-        return "{0} - {1}".format(self.amendment_type.name, self.crop)
+        return "{0} - {1}".format(self.amendment_ratio, self.crop)
     

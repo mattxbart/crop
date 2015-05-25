@@ -7,8 +7,8 @@ class AmendmentAdmin(admin.ModelAdmin):
     }
 
 
-class AmendmentTypeAdmin(admin.ModelAdmin):
-    pass
+class AmendmentRatioAdmin(admin.ModelAdmin):
+    list_display = ['gypsum', 'manure', 'sulfur']
 
 class CustomerAdmin(admin.ModelAdmin):
     pass
@@ -29,7 +29,7 @@ class CornMiloAdmin(admin.ModelAdmin):
                     'yield_per_acre_70',]
 
 admin.site.register(Amendment, AmendmentAdmin)
-admin.site.register(AmendmentType, AmendmentTypeAdmin)
+admin.site.register(AmendmentRatio, AmendmentRatioAdmin)
 admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Field, FieldAdmin)
 admin.site.register(CropType, CropTypeAdmin)
