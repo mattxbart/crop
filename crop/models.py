@@ -9,8 +9,13 @@ class AmendmentType(models.Model):
     def __str__(self):
         return self.name
 
+class Customer(models.Model):
+
+   name = models.CharField(max_length=255)
+
 class Field(models.Model):
 
+    customer = models.ForeignKey('crop.Customer', null=True)
     name = models.CharField(max_length=255)
     number = models.CharField(verbose_name="Field Number", max_length=255)
     acres = models.FloatField()
