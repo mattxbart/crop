@@ -10,6 +10,9 @@ class AmendmentAdmin(admin.ModelAdmin):
 class AmendmentTypeAdmin(admin.ModelAdmin):
     pass
 
+class CustomerAdmin(admin.ModelAdmin):
+    pass
+
 class FieldAdmin(admin.ModelAdmin):
     pass
 
@@ -27,6 +30,7 @@ class CornMiloAdmin(admin.ModelAdmin):
 
 admin.site.register(Amendment, AmendmentAdmin)
 admin.site.register(AmendmentType, AmendmentTypeAdmin)
+admin.site.register(Customer, CustomerAdmin)
 admin.site.register(Field, FieldAdmin)
 admin.site.register(CropType, CropTypeAdmin)
 admin.site.register(HarvestMethod, HarvestMethodAdmin)
