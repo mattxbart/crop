@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from setuptools import setup
 import platform
+
 install_requires = [
     'django >= 1.8',
     'psycopg2',
