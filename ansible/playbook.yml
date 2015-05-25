@@ -9,8 +9,9 @@
     application_dir: "{{ virtualenv_dir }}/crop"
     django_project_name: prj
     django_project_home: "{{ virtualenv_dir }}/{{ django_project_name }}"
-    django_settings_module: "{{ django_project_home }}/{{django_project_name }}/settings.py"
+    django_settings_module: "{{ django_project_name }}.settings"
     postgres_db: "wegisyoung"
+    postgres_host: "localhost"
     postgres_user: "django"
     postgres_password: "ceec4eif7ya"
 
@@ -114,11 +115,17 @@
     sudo_user: postgres
 
   - name: create postgres user
-    postgresql_user: db=wegisyoung name={{ postgres_user }} password={{ postgres_password }} priv=ALL
+    postgresql_user: db={{ postgres_db }} name={{ postgres_user }} password={{ postgres_password }} priv=ALL
     sudo_user: postgres
 
   - name: Django syncdb
     django_manage: command=syncdb
+      virtualenv={{ virtualenv_dir }}
+      app_path={{ django_project_home }}
+      settings={{ django_settings_module }}
+
+  - name: Django migrate
+    django_manage: command=migrate
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
       settings={{ django_settings_module }}

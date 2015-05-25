@@ -12,7 +12,7 @@ class AmendmentType(models.Model):
 class Field(models.Model):
 
     name = models.CharField(max_length=255)
-    number = models.CharField(max_length=255)
+    number = models.CharField(verbose_name="Field Number", max_length=255)
     acres = models.FloatField()
 
     class Meta:
