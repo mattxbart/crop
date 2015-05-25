@@ -97,7 +97,6 @@ class Amendment(models.Model):
     crop_type = models.ForeignKey(ContentType, limit_choices_to=limit)
     crop_id = models.PositiveIntegerField()
     crop = generic.GenericForeignKey("crop_type", "crop_id")
-    customer = models.PositiveIntegerField()
     date_applied = models.DateField()
     tons = models.FloatField()
 
