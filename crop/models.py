@@ -68,15 +68,15 @@ class CornMilo(CropBase):
     kernels = models.FloatField(help_text="lbs. per acre")
 
     def crop_yield_70(self):
-        return (100.0 - self.moisture) * self.crop_yield / 30.0
+        return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
     crop_yield_70.short_description = 'Total Yield at 70%'
 
     def yield_per_acre(self):
-        return self.crop_yield / self.field.acres
+        return round(self.crop_yield / self.field.acres, 1)
     yield_per_acre.short_description = 'Yield - tons per acre'
 
     def yield_per_acre_70(self):
-        return self.crop_yield_70() / self.field.acres
+        return round(self.crop_yield_70() / self.field.acres, 1)
     yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
 
     def __str__(self):
