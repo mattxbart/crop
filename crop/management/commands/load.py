@@ -21,11 +21,11 @@ class Command(BaseCommand):
                                                        acres=acres)
     def load_corn(self):
 
-        filename = os.path.join(BASE_DIR, '../import_data/corn_milo_yields.csv')
+        filename = os.path.join(BASE_DIR, '../import_data/corn_yields.csv')
         data = csv.reader(open(filename))
         data.next()
         print ('loading corn yields')
-        for crop_type, property_name, property_number, plant_date, harvest_date, tons, moisture, seeds, kernels in data:
+        for crop_type, property_name, property_number, plant_date, harvest_date, tons, moisture, seeds in data:
             crop_type, created = CropType.objects.get_or_create(name=crop_type)
             print (property_name, property_number)
             field = Field.objects.get(name=property_name, number=property_number)
@@ -33,18 +33,43 @@ class Command(BaseCommand):
             plant_date = parse(plant_date)
             harvest_date = parse(harvest_date)
 
-            obj, created = CornMilo.objects.get_or_create(type=crop_type,
-                                                          field=field,
-                                                          plant_date=plant_date,
-                                                          harvest_date=harvest_date,
-                                                          crop_yield=tons,
-                                                          moisture=moisture,
-                                                          seeds=seeds,
-                                                          kernels=kernels)
+            obj, created = Corn.objects.get_or_create(type=crop_type,
+                                                      field=field,
+                                                      plant_date=plant_date,
+                                                      harvest_date=harvest_date,
+                                                      crop_yield=tons,
+                                                      moisture=moisture,
+                                                      seeds=seeds)
+                                                          
+            print (obj)
+
+    def load_milo(self):
+
+        filename = os.path.join(BASE_DIR, '../import_data/corn_yields.csv')
+        data = csv.reader(open(filename))
+        data.next()
+        print ('loading corn yields')
+        for crop_type, property_name, property_number, plant_date, harvest_date, tons, moisture, kernels in data:
+            crop_type, created = CropType.objects.get_or_create(name=crop_type)
+            print (property_name, property_number)
+            field = Field.objects.get(name=property_name, number=property_number)
+
+            plant_date = parse(plant_date)
+            harvest_date = parse(harvest_date)
+
+            obj, created = Milo.objects.get_or_create(type=crop_type,
+                                                      field=field,
+                                                      plant_date=plant_date,
+                                                      harvest_date=harvest_date,
+                                                      crop_yield=tons,
+                                                      moisture=moisture,
+                                                      kernels=kernels)
+                                                          
             print (obj)
 
     def handle(self, *args, **options):
 
         self.load_fields()
         self.load_corn()
+        self.load_milo()
 

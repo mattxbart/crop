@@ -74,11 +74,15 @@
     git: repo=https://github.com/mattxbart/crop.git
          dest={{ application_dir }}
     sudo_user: deploy
+    tags:
+      - update
 
   - name: install web application dependencies
     pip: requirements={{ application_dir }}/requirements.txt
          virtualenv={{virtualenv_dir}}
     sudo_user: deploy
+    tags:
+      - update
 
   - name: check if django project already exists
     stat: path={{ django_project_home }}
@@ -129,8 +133,11 @@
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
       settings={{ django_settings_module }}
+    tags:
+      - update
     notify:
-    - restart apache2
+      - restart apache2
+
 
   handlers:
     - name: restart apache2

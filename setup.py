@@ -8,6 +8,7 @@ install_requires = [
     'django-grappelli',
     'djangorestframework',
     'dateutils',
+    'django-model-utils',
 ]
 dependency_links = []
 

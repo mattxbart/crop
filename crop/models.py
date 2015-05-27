@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import ValidationError
+from model_utils.managers import InheritanceManager
 
 class Customer(models.Model):
 
@@ -40,7 +41,7 @@ class HarvestMethod(models.Model):
     def __str__(self):
         return self.name
 
-class CropBase(models.Model):
+class Crop(models.Model):
 
     type = models.ForeignKey('crop.CropType')
     field = models.ForeignKey('crop.Field')
@@ -49,10 +50,9 @@ class CropBase(models.Model):
     crop_yield = models.FloatField(verbose_name="Total Yield - tons")
     moisture = models.FloatField(help_text="Moisture - pct.")
 
-    class Meta:
-        abstract = True
+    objects = InheritanceManager()
 
-class Alfalfa(CropBase):
+class Alfalfa(Crop):
 
     cutting = models.PositiveIntegerField()
     cut_date = models.DateField()
@@ -62,9 +62,30 @@ class Alfalfa(CropBase):
     first_water = models.DateField(null=True, blank=True)
     second_water = models.DateField(null=True, blank=True)
     
-class CornMilo(CropBase):
+class Corn(Crop):
 
     seeds = models.FloatField(help_text="lbs. per acre")
+
+    def crop_yield_70(self):
+        return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
+    crop_yield_70.short_description = 'Total Yield at 70%'
+
+    def yield_per_acre(self):
+        return round(self.crop_yield / self.field.acres, 1)
+    yield_per_acre.short_description = 'Yield - tons per acre'
+
+    def yield_per_acre_70(self):
+        return round(self.crop_yield_70() / self.field.acres, 1)
+    yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
+
+    def __str__(self):
+        return "{0} {1}".format(self.type, self.field)
+
+    class Meta:
+        verbose_name_plural = "Corn"
+
+class Milo(Crop):
+
     kernels = models.FloatField(help_text="lbs. per acre")
 
     def crop_yield_70(self):
@@ -83,7 +104,7 @@ class CornMilo(CropBase):
         return "{0} {1}".format(self.type, self.field)
 
     class Meta:
-        verbose_name_plural = "Corn & Milo"
+        verbose_name_plural = "Milo"
 
 class AmendmentRatio(models.Model):
 
