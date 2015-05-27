@@ -8,7 +8,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
                        #url(r'^$', views.Home.as_view()),
-                       url(r'^download/corn-milo/', views.download_corn_milo),
+                       url(r'^download/crops/', views.download_crops),
+                       url(r'^download/amendments/', views.download_amendments),
                        url(r'^admin/', include(admin.site.urls)),
                        (r'^grappelli/', include('grappelli.urls')),
 
