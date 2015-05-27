@@ -52,6 +52,22 @@ class Crop(models.Model):
 
     objects = InheritanceManager()
 
+    def crop_yield_70(self):
+        return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
+    crop_yield_70.short_description = 'Total Yield at 70%'
+
+    def yield_per_acre(self):
+        return round(self.crop_yield / self.field.acres, 1)
+    yield_per_acre.short_description = 'Yield - tons per acre'
+
+    def yield_per_acre_70(self):
+        return round(self.crop_yield_70() / self.field.acres, 1)
+    yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
+
+    def __str__(self):
+        return "{0} {1}".format(self.type, self.field)
+
+
 class Alfalfa(Crop):
 
     cutting = models.PositiveIntegerField()
@@ -66,42 +82,12 @@ class Corn(Crop):
 
     seeds = models.FloatField(help_text="lbs. per acre")
 
-    def crop_yield_70(self):
-        return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
-    crop_yield_70.short_description = 'Total Yield at 70%'
-
-    def yield_per_acre(self):
-        return round(self.crop_yield / self.field.acres, 1)
-    yield_per_acre.short_description = 'Yield - tons per acre'
-
-    def yield_per_acre_70(self):
-        return round(self.crop_yield_70() / self.field.acres, 1)
-    yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
-
-    def __str__(self):
-        return "{0} {1}".format(self.type, self.field)
-
     class Meta:
         verbose_name_plural = "Corn"
 
 class Milo(Crop):
 
     kernels = models.FloatField(help_text="lbs. per acre")
-
-    def crop_yield_70(self):
-        return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
-    crop_yield_70.short_description = 'Total Yield at 70%'
-
-    def yield_per_acre(self):
-        return round(self.crop_yield / self.field.acres, 1)
-    yield_per_acre.short_description = 'Yield - tons per acre'
-
-    def yield_per_acre_70(self):
-        return round(self.crop_yield_70() / self.field.acres, 1)
-    yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
-
-    def __str__(self):
-        return "{0} {1}".format(self.type, self.field)
 
     class Meta:
         verbose_name_plural = "Milo"
