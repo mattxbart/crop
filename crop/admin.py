@@ -5,7 +5,7 @@ class AmendmentAdmin(admin.ModelAdmin):
     related_lookup_fields = {
         'generic': [['crop_type', 'crop_id']]
     }
-
+    list_display = ['amendment_ratio', 'date_applied', 'tons']
 
 class AmendmentRatioAdmin(admin.ModelAdmin):
     list_display = ['gypsum', 'manure', 'sulfur']
