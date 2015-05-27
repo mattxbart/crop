@@ -122,7 +122,7 @@ class Amendment(models.Model):
 
     amendment_ratio = models.ForeignKey('crop.AmendmentRatio')
 
-    limit = models.Q(app_label = 'crop', model = 'cornmilo') | models.Q(app_label = 'crop', model = 'alfalfa')
+    limit = models.Q(app_label = 'crop', model = 'corn') | models.Q(app_label = 'crop', model = 'alfalfa') | models.Q(app_label = 'crop', model = 'milo')
 
     crop_type = models.ForeignKey(ContentType, limit_choices_to=limit)
     crop_id = models.PositiveIntegerField()

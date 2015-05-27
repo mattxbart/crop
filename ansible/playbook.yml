@@ -111,6 +111,8 @@
     django_manage: command=collectstatic 
       virtualenv={{ virtualenv_dir }}
       app_path={{ django_project_home }}
+    tags:
+      - update
 
   - name: create postgres db
     postgresql_db: name={{ postgres_db }}
