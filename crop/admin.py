@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.contenttypes.admin import GenericTabularInline
 from crop.models import *
 
 class AmendmentAdmin(admin.ModelAdmin):
@@ -7,6 +8,11 @@ class AmendmentAdmin(admin.ModelAdmin):
     }
     list_display = ['application_rate', 'date_applied', 'tons']
     readonly_fields=('id',)
+
+class AmendmentInline(GenericTabularInline):
+    model = Amendment
+    ct_field = 'crop_type'
+    ct_fk_field = 'crop_id'
 
 class ApplicationRateAdmin(admin.ModelAdmin):
     list_display = ['gypsum', 'manure', 'sulfur']
@@ -30,6 +36,7 @@ class CornAdmin(admin.ModelAdmin):
                     'harvest_date', 'crop_yield',
                     'yield_per_acre', 'crop_yield_70',
                     'yield_per_acre_70',]
+    inlines = [AmendmentInline]
 
 class MiloAdmin(admin.ModelAdmin):
     readonly_fields=('id',)
