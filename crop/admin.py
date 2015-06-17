@@ -44,6 +44,7 @@ class MiloAdmin(admin.ModelAdmin):
                     'harvest_date', 'crop_yield',
                     'yield_per_acre', 'crop_yield_70',
                     'yield_per_acre_70',]
+    inlines = [AmendmentInline]
 
 class AlmondAdmin(admin.ModelAdmin):
     readonly_fields=('id',)
@@ -51,6 +52,7 @@ class AlmondAdmin(admin.ModelAdmin):
                     'harvest_date', 'crop_yield',
                     'yield_per_acre', 'crop_yield_70',
                     'yield_per_acre_70',]
+    inlines = [AmendmentInline]
 
 admin.site.register(Amendment, AmendmentAdmin)
 admin.site.register(ApplicationRate, ApplicationRateAdmin)
