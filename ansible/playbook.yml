@@ -96,6 +96,8 @@
   - name: setup django settings
     template: src=roles/webtier/templates/local_settings.j2 dest="{{ django_project_home }}/prj/local_settings.py"
     sudo_user: deploy
+    tags:
+      - update
 
   - name: update django to use local settings
     lineinfile:

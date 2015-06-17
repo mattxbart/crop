@@ -1,4 +1,5 @@
 from django.db import models
+from django import forms
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import ValidationError
@@ -45,10 +46,10 @@ class Crop(models.Model):
 
     type = models.ForeignKey('crop.CropType')
     field = models.ForeignKey('crop.Field')
-    plant_date = models.DateField()
+    plant_date = models.DateField(null=True, blank=True)
     harvest_date = models.DateField(null=True, blank=True)
-    crop_yield = models.FloatField(verbose_name="Total Yield - tons")
-    moisture = models.FloatField(help_text="Moisture - pct.")
+    crop_yield = models.FloatField(null=True, blank=True, verbose_name="Total Yield - tons")
+    moisture = models.FloatField(null=True, blank=True, help_text="Moisture - pct.")
 
     objects = InheritanceManager()
 
@@ -70,29 +71,32 @@ class Crop(models.Model):
 
 class Alfalfa(Crop):
 
-    cutting = models.PositiveIntegerField()
-    cut_date = models.DateField()
+    cutting = models.PositiveIntegerField(null=True, blank=True)
+    cut_date = models.DateField(null=True, blank=True)
     pickup_date = models.DateField(null=True, blank=True)
-    harvest_method = models.ForeignKey('crop.HarvestMethod')
+    harvest_method = models.ForeignKey('crop.HarvestMethod', null=True, blank=True)
     weed_spray = models.DateField(null=True, blank=True)
     first_water = models.DateField(null=True, blank=True)
     second_water = models.DateField(null=True, blank=True)
     
 class Corn(Crop):
 
-    seeds = models.FloatField(help_text="lbs. per acre")
+    seeds = models.FloatField(help_text="lbs. per acre", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Corn"
 
 class Milo(Crop):
 
-    kernels = models.FloatField(help_text="lbs. per acre")
+    kernels = models.FloatField(help_text="lbs. per acre", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "Milo"
 
-class AmendmentRatio(models.Model):
+class Almond(Crop):
+    pass
+
+class ApplicationRate(models.Model):
 
     gypsum = models.FloatField()
     manure = models.FloatField()
@@ -120,7 +124,7 @@ class AmendmentRatio(models.Model):
 
 class Amendment(models.Model):
 
-    amendment_ratio = models.ForeignKey('crop.AmendmentRatio')
+    application_rate = models.ForeignKey('crop.ApplicationRate')
 
     limit = models.Q(app_label = 'crop', model = 'corn') | models.Q(app_label = 'crop', model = 'alfalfa') | models.Q(app_label = 'crop', model = 'milo')
 
