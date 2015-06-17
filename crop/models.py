@@ -135,5 +135,5 @@ class Amendment(models.Model):
     tons = models.FloatField()
 
     def __str__(self):
-        return "{0} - {1}".format(self.amendment_ratio, self.crop)
+        return "{0} - {1}".format(self.application_rate, self.crop)
     
