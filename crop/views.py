@@ -72,9 +72,9 @@ def download_amendments(request):
                          obj.crop.id,
                          obj.date_applied,
                          obj.tons,
-                         obj.amendment_ratio.gypsum,
-                         obj.amendment_ratio.sulfur,
-                         obj.amendment_ratio.manure,
+                         obj.application_rate.gypsum,
+                         obj.application_rate.sulfur,
+                         obj.application_rate.manure,
                          ])
 
     return response
