@@ -54,15 +54,24 @@ class Crop(models.Model):
     objects = InheritanceManager()
 
     def crop_yield_70(self):
-        return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
+        try:
+            return round((100.0 - self.moisture) * self.crop_yield / 30.0, 1)
+        except TypeError:
+            return 0.0
     crop_yield_70.short_description = 'Total Yield at 70%'
 
     def yield_per_acre(self):
-        return round(self.crop_yield / self.field.acres, 1)
+        try:
+            return round(self.crop_yield / self.field.acres, 1)
+        except TypeError:
+            return 0.0
     yield_per_acre.short_description = 'Yield - tons per acre'
 
     def yield_per_acre_70(self):
-        return round(self.crop_yield_70() / self.field.acres, 1)
+        try:
+            return round(self.crop_yield_70() / self.field.acres, 1)
+        except TypeError:
+            return 0.0
     yield_per_acre_70.short_description = 'Yield - tons per acre at 70%'
 
     def __str__(self):
