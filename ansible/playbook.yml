@@ -76,6 +76,8 @@
     sudo_user: deploy
     tags:
       - update
+    notify:
+      - restart apache2
 
   - name: install web application dependencies
     pip: requirements={{ application_dir }}/requirements.txt
