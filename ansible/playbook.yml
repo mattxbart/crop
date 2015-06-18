@@ -98,6 +98,8 @@
     sudo_user: deploy
     tags:
       - update
+    notify:
+      - restart apache2
 
   - name: update django to use local settings
     lineinfile:
